@@ -2,5 +2,6 @@ package com.example.compose
 
 data class ItemRowModel (
     val image : Int,
-    val name : String
+    val title : String,
+    val content : String
 )
