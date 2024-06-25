@@ -51,6 +51,12 @@ android {
 
 dependencies {
 
+    implementation ("com.google.accompanist:accompanist-pager:0.19.0")
+    implementation ("com.google.accompanist:accompanist-pager-indicators:0.19.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9")
+    implementation("com.google.accompanist:accompanist-insets:0.30.0")
+    implementation("io.coil-kt:coil-compose:2.0.0-rc01")
+    implementation(libs.volley)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -59,6 +65,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.material3.android)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
