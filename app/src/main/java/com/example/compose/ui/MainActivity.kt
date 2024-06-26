@@ -26,7 +26,7 @@ class MainActivity : ComponentActivity() {
                 contentDescription = "image",
                 modifier = Modifier
                     .fillMaxSize()
-                    .alpha(0.9f),
+                    .alpha(0.8f),
                 contentScale = ContentScale.FillBounds
             )
             Column {
