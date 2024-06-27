@@ -143,7 +143,7 @@ fun MainCard() {
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun TabLayout() {
+fun TabLayout(list: List<WeatherModel>) {
     val tabList = listOf("HOURS", "DAYS")
     val pagerState = rememberPagerState(initialPage = 0)
     val tabIndex = pagerState.currentPage
@@ -187,28 +187,29 @@ fun TabLayout() {
         ) { index ->
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 itemsIndexed(
-                    listOf(
-                        WeatherModel(
-                            city = "Moscow",
-                            "10:00",
-                            "20",
-                            "Sunny",
-                            "https://cdn.weatherapi.com/weather/64x64/day/116.png",
-                            "",
-                            "",
-                            ""
-                        ),
-                        WeatherModel(
-                            city = "Moscow",
-                            "27.06.2024",
-                            "",
-                            "Sunny",
-                            "https://cdn.weatherapi.com/weather/64x64/day/116.png",
-                            "24",
-                            "16",
-                            ""
-                        )
-                    )
+//                    listOf(
+//                        WeatherModel(
+//                            city = "Moscow",
+//                            "10:00",
+//                            "20",
+//                            "Sunny",
+//                            "https://cdn.weatherapi.com/weather/64x64/day/116.png",
+//                            "",
+//                            "",
+//                            ""
+//                        ),
+//                        WeatherModel(
+//                            city = "Moscow",
+//                            "27.06.2024",
+//                            "",
+//                            "Sunny",
+//                            "https://cdn.weatherapi.com/weather/64x64/day/116.png",
+//                            "24",
+//                            "16",
+//                            ""
+//                        )
+//                    )
+                    list
                 ){_, item ->
                     ListItem(item = item)
 
