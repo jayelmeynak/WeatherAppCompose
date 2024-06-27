@@ -1,4 +1,4 @@
-package com.example.compose.ui
+package com.example.compose.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,10 +17,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.example.compose.ui.data.WeatherModel
 import com.example.compose.ui.theme.CardNewBg
 
 @Composable
-fun ListItem() {
+fun ListItem(item: WeatherModel) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -38,18 +39,18 @@ fun ListItem() {
             verticalAlignment = Alignment.CenterVertically
         ){
             Column(modifier = Modifier.padding(start = 6.dp, top = 4.dp, bottom = 6.dp)) {
-                Text(text = "00:00",
-                    fontSize = 16.sp,
+                Text(text = item.time,
+                    fontSize = 14.sp,
                     color = Color.White
                     )
-                Text(text = "Cloud",
-                    fontSize = 16.sp,
+                Text(text = item.condition,
+                    fontSize = 14.sp,
                     color = Color.Black)
             }
-            Text(text = "16°C",
+            Text(text = if(item.currentTemp.isNotEmpty()) "${item.currentTemp}°C" else "${item.maxTemp}°C/${item.minTemp}°C",
                 fontSize = 24.sp,
                 color = Color.White)
-            AsyncImage(model = "https://cdn.weatherapi.com/weather/64x64/day/116.png",
+            AsyncImage(model = "https:${item.icon}",
                 contentDescription = "condition",
                 modifier = Modifier
                     .padding(end = 4.dp)

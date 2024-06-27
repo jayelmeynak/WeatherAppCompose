@@ -11,8 +11,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import com.example.compose.ui.MainCard
-import com.example.compose.ui.TabLayout
+import com.example.compose.ui.screens.MainCard
+import com.example.compose.ui.screens.TabLayout
 
 const val API_KEY = "80f2a708a2fb49d7a04192911241503"
 

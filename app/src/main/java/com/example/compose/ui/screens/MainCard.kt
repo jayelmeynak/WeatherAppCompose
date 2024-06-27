@@ -1,4 +1,4 @@
-package com.example.compose.ui
+package com.example.compose.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -31,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.compose.R
+import com.example.compose.ui.data.WeatherModel
 import com.example.compose.ui.theme.CardNewBg
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -184,8 +186,32 @@ fun TabLayout() {
             modifier = Modifier.weight(1.0f)
         ) { index ->
             LazyColumn(modifier = Modifier.fillMaxSize()) {
-                items(10){
-                    ListItem()
+                itemsIndexed(
+                    listOf(
+                        WeatherModel(
+                            city = "Moscow",
+                            "10:00",
+                            "20",
+                            "Sunny",
+                            "https://cdn.weatherapi.com/weather/64x64/day/116.png",
+                            "",
+                            "",
+                            ""
+                        ),
+                        WeatherModel(
+                            city = "Moscow",
+                            "27.06.2024",
+                            "",
+                            "Sunny",
+                            "https://cdn.weatherapi.com/weather/64x64/day/116.png",
+                            "24",
+                            "16",
+                            ""
+                        )
+                    )
+                ){_, item ->
+                    ListItem(item = item)
+
                 }
             }
         }
