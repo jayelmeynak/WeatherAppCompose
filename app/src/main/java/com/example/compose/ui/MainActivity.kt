@@ -21,6 +21,7 @@ import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.compose.ui.data.WeatherModel
+import com.example.compose.ui.screens.DialogSearch
 import com.example.compose.ui.screens.MainCard
 import com.example.compose.ui.screens.TabLayout
 import com.example.compose.ui.theme.ComposeTheme
@@ -51,7 +52,18 @@ class MainActivity : ComponentActivity() {
                         )
                     )
                 }
-                getData("Moscow", this, list, currentDay)
+                val city = remember {
+                    mutableStateOf("Москва")
+                }
+
+                val dialogState = remember {
+                    mutableStateOf(false)
+                }
+                if (dialogState.value){
+                    DialogSearch(dialogState, city)
+                }
+
+                getData(city, this, list, currentDay)
 
                 Image(
                     painter = painterResource(id = R.drawable.weather_image),
@@ -63,8 +75,10 @@ class MainActivity : ComponentActivity() {
                 )
                 Column {
                     MainCard(currentDay, onClickSync = {
-                        getData("Moscow", this@MainActivity, list, currentDay)
-                    } )
+                        getData(city, this@MainActivity, list, currentDay)
+                    }, onClickSearch = {
+                        dialogState.value = true
+                    })
                     TabLayout(list, currentDay)
                 }
             }
@@ -73,13 +87,13 @@ class MainActivity : ComponentActivity() {
 }
 
 private fun getData(
-    city: String,
+    city: MutableState<String>,
     context: Context,
     daysList: MutableState<List<WeatherModel>>,
     currentDay: MutableState<WeatherModel>
 ) {
     val url =
-        "https://api.weatherapi.com/v1/forecast.json?key=$API_KEY&q=$city&days=7&aqi=no&alerts=no&lang=ru"
+        "https://api.weatherapi.com/v1/forecast.json?key=$API_KEY&q=${city.value}&days=7&aqi=no&alerts=no&lang=ru"
     val queue = Volley.newRequestQueue(context)
     val request = StringRequest(
         Request.Method.GET, url, { response ->
@@ -105,7 +119,7 @@ private fun getWeatherByDays(response: String): List<WeatherModel> {
     if (response.isEmpty()) return listOf()
     val list = ArrayList<WeatherModel>()
     val mainObject = JSONObject(response)
-    val city = mainObject.getJSONObject("location").getString("name")
+    val city = mainObject.getJSONObject("location").getString("name").changeStringCoding()
     val days = mainObject.getJSONObject("forecast").getJSONArray("forecastday")
     for (i in 0 until days.length()) {
         val item = days[i] as JSONObject
