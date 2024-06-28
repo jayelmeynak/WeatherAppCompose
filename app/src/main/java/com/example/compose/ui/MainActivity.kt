@@ -16,12 +16,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import com.android.volley.DefaultRetryPolicy
 import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.compose.ui.data.WeatherModel
 import com.example.compose.ui.screens.MainCard
 import com.example.compose.ui.screens.TabLayout
+import com.example.compose.ui.theme.ComposeTheme
 import org.json.JSONObject
 
 const val API_KEY = "80f2a708a2fb49d7a04192911241503"
@@ -31,38 +33,69 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val list = remember{
-                mutableStateOf(listOf<WeatherModel>())
-            }
-            getData("Moscow", this@MainActivity, list)
+            ComposeTheme {
+                val list = remember {
+                    mutableStateOf(listOf<WeatherModel>())
+                }
+                val currentDay = remember {
+                    mutableStateOf(
+                        WeatherModel(
+                            "Moscow",
+                            "2024-06-28",
+                            "22",
+                            "Sunny",
+                            "https://cdn.weatherapi.com/weather/64x64/day/116.png",
+                            "24",
+                            "10",
+                            ""
+                        )
+                    )
+                }
+                getData("Moscow", this@MainActivity, list, currentDay)
 
-            Image(
-                painter = painterResource(id = R.drawable.weather_image),
-                contentDescription = "image",
-                modifier = Modifier
-                    .fillMaxSize()
-                    .alpha(0.8f),
-                contentScale = ContentScale.FillBounds
-            )
-            Column {
-                MainCard()
-                TabLayout(list.value)
+                Image(
+                    painter = painterResource(id = R.drawable.weather_image),
+                    contentDescription = "image",
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .alpha(0.8f),
+                    contentScale = ContentScale.FillBounds
+                )
+                Column {
+                    MainCard(currentDay.value)
+                    TabLayout(list.value, currentDay)
+                }
             }
         }
     }
 }
 
-private fun getData(city: String, context: Context, daysList: MutableState<List<WeatherModel>>) {
+private fun getData(
+    city: String,
+    context: Context,
+    daysList: MutableState<List<WeatherModel>>,
+    currentDay: MutableState<WeatherModel>
+) {
     val url =
         "https://api.weatherapi.com/v1/forecast.json?key=$API_KEY&q=$city&days=7&aqi=no&alerts=no&lang=ru"
     val queue = Volley.newRequestQueue(context)
     val request = StringRequest(
         Request.Method.GET, url, { response ->
-            daysList.value = getWeatherByDays(response)
+            val list = getWeatherByDays(response)
+            currentDay.value = list[0]
+            daysList.value = list
+            Log.d("MyLog", response)
         }, {
-            Log.d("MyLog", "VolleyError: $it")
+
         }
     )
+
+    request.retryPolicy = DefaultRetryPolicy(
+        10000,
+        DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+        DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+    )
+
     queue.add(request)
 }
 
@@ -91,12 +124,13 @@ private fun getWeatherByDays(response: String): List<WeatherModel> {
     }
     list[0] = list[0].copy(
         time = mainObject.getJSONObject("current").getString("last_updated"),
-        currentTemp = mainObject.getJSONObject("current").getString("temp_c").toDouble().toInt().toString(),
+        currentTemp = mainObject.getJSONObject("current").getString("temp_c").toDouble().toInt()
+            .toString(),
     )
     return list
 }
 
-private fun String.changeStringCoding(): String{
+private fun String.changeStringCoding(): String {
     return String(this.toByteArray(Charsets.ISO_8859_1), Charsets.UTF_8)
 }
 
