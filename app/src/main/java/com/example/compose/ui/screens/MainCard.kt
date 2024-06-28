@@ -43,7 +43,7 @@ import java.time.format.DateTimeFormatter
 
 
 @Composable
-fun MainCard(currentDay: MutableState<WeatherModel>) {
+fun MainCard(currentDay: MutableState<WeatherModel>, onClickSync: () -> Unit) {
     Column(
         modifier = Modifier
             .systemBarsPadding()
@@ -126,7 +126,7 @@ fun MainCard(currentDay: MutableState<WeatherModel>) {
                         color = Color.White
                     )
                     IconButton(onClick = {
-
+                            onClickSync()
                     }) {
                         Icon(
                             painter = painterResource(id = R.drawable.icon_sync),
