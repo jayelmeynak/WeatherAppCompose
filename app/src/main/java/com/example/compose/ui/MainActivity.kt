@@ -51,7 +51,7 @@ class MainActivity : ComponentActivity() {
                         )
                     )
                 }
-                getData("Moscow", this@MainActivity, list, currentDay)
+                getData("Moscow", this, list, currentDay)
 
                 Image(
                     painter = painterResource(id = R.drawable.weather_image),
@@ -62,8 +62,8 @@ class MainActivity : ComponentActivity() {
                     contentScale = ContentScale.FillBounds
                 )
                 Column {
-                    MainCard(currentDay.value)
-                    TabLayout(list.value, currentDay)
+                    MainCard(currentDay)
+                    TabLayout(list, currentDay)
                 }
             }
         }

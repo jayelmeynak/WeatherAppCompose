@@ -43,7 +43,7 @@ import java.time.format.DateTimeFormatter
 
 
 @Composable
-fun MainCard(currentDay: WeatherModel) {
+fun MainCard(currentDay: MutableState<WeatherModel>) {
     Column(
         modifier = Modifier
             .systemBarsPadding()
@@ -70,12 +70,12 @@ fun MainCard(currentDay: WeatherModel) {
                     Text(
                         modifier = Modifier.padding(top = 8.dp, start = 8.dp),
                         text = LocalDateTime.now()
-                            .format(DateTimeFormatter.ofPattern(currentDay.time)),
+                            .format(DateTimeFormatter.ofPattern(currentDay.value.time)),
                         style = TextStyle(fontSize = 15.sp),
                         color = Color.White
                     )
                     AsyncImage(
-                        model = "https:${currentDay.icon}",
+                        model = "https:${currentDay.value.icon}",
                         contentDescription = "im2",
                         modifier = Modifier
                             .size(35.dp)
@@ -86,21 +86,21 @@ fun MainCard(currentDay: WeatherModel) {
 
                 Text(
                     modifier = Modifier.padding(top = 16.dp),
-                    text = currentDay.city,
+                    text = currentDay.value.city,
                     style = TextStyle(fontSize = 24.sp),
                     color = Color.White
 
                 )
                 Text(
                     modifier = Modifier.padding(top = 8.dp),
-                    text = if(currentDay.currentTemp.isNotEmpty()) "${currentDay.currentTemp}°C"
-                    else "${currentDay.maxTemp}°C/${currentDay.minTemp}°C",
+                    text = if (currentDay.value.currentTemp.isNotEmpty()) "${currentDay.value.currentTemp}°C"
+                    else "${currentDay.value.maxTemp}°C/${currentDay.value.minTemp}°C",
                     style = TextStyle(fontSize = 70.sp),
                     color = Color.White
                 )
                 Text(
                     modifier = Modifier.padding(top = 8.dp),
-                    text = currentDay.condition,
+                    text = currentDay.value.condition,
                     style = TextStyle(fontSize = 16.sp),
                     color = Color.White
                 )
@@ -121,7 +121,7 @@ fun MainCard(currentDay: WeatherModel) {
                     }
                     Text(
                         modifier = Modifier.padding(top = 12.dp),
-                        text = "${currentDay.maxTemp}°C/${currentDay.minTemp}°C",
+                        text = "${currentDay.value.maxTemp}°C/${currentDay.value.minTemp}°C",
                         style = TextStyle(fontSize = 16.sp),
                         color = Color.White
                     )
@@ -144,7 +144,7 @@ fun MainCard(currentDay: WeatherModel) {
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun TabLayout(daysList: List<WeatherModel>, currentDay: MutableState<WeatherModel>) {
+fun TabLayout(daysList: MutableState<List<WeatherModel>>, currentDay: MutableState<WeatherModel>) {
     val tabList = listOf("HOURS", "DAYS")
     val pagerState = rememberPagerState()
     val tabIndex = pagerState.currentPage
@@ -186,21 +186,21 @@ fun TabLayout(daysList: List<WeatherModel>, currentDay: MutableState<WeatherMode
             state = pagerState,
             modifier = Modifier.weight(1.0f)
         ) { index ->
-            val list = when(index){
+            val list = when (index) {
                 0 -> getWeatherByHours(currentDay.value.hours)
-                1 -> daysList
-                else -> daysList
+                1 -> daysList.value
+                else -> daysList.value
             }
             MainList(list, currentDay)
         }
     }
 }
 
-private fun getWeatherByHours(hours: String): List<WeatherModel>{
+private fun getWeatherByHours(hours: String): List<WeatherModel> {
     if (hours.isEmpty()) return listOf()
     val list = ArrayList<WeatherModel>()
     val hoursJsonArray = JSONArray(hours)
-    for(i in 0 until hoursJsonArray.length()){
+    for (i in 0 until hoursJsonArray.length()) {
         val item = hoursJsonArray[i] as JSONObject
         list.add(
             WeatherModel(
@@ -226,6 +226,6 @@ private fun extractTime(dateTimeString: String): String {
     return dateTime.format(timeFormatter)
 }
 
-private fun String.changeStringCoding(): String{
+private fun String.changeStringCoding(): String {
     return String(this.toByteArray(Charsets.ISO_8859_1), Charsets.UTF_8)
 }
