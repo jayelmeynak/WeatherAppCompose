@@ -51,9 +51,12 @@ android {
 
 dependencies {
 
+    val nav_version = "2.7.7"
+
+    implementation("androidx.navigation:navigation-compose:$nav_version")
     implementation ("com.google.accompanist:accompanist-pager:0.19.0")
     implementation ("com.google.accompanist:accompanist-pager-indicators:0.19.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
     implementation("com.google.accompanist:accompanist-insets:0.30.0")
     implementation("io.coil-kt:coil-compose:2.0.0-rc01")
     implementation(libs.volley)
