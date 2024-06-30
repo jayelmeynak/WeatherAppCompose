@@ -23,6 +23,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.compose.ui.DrawerBody
+import com.example.compose.ui.DrawerHeader
 import com.example.compose.ui.theme.ComposeTheme
 import kotlinx.coroutines.launch
 
@@ -55,7 +57,9 @@ fun MainScreen(context: Context) {
                 },
                 navigationIcon = {
                     IconButton(onClick = {
-                        Toast.makeText(context, "Menu", Toast.LENGTH_SHORT).show()
+                        coroutineScope.launch {
+                            scaffoldState.drawerState.open()
+                        }
                     }) {
                         Icon(imageVector = Icons.Default.Menu, contentDescription = "Menu")
                     }
@@ -67,7 +71,7 @@ fun MainScreen(context: Context) {
                                 message = "Item deleted",
                                 actionLabel = "Undone"
                             )
-                            if (result == SnackbarResult.ActionPerformed){
+                            if (result == SnackbarResult.ActionPerformed) {
                                 Toast.makeText(context, "Item recovered", Toast.LENGTH_SHORT).show()
                             }
                         }
@@ -81,11 +85,16 @@ fun MainScreen(context: Context) {
                     }
                 }
             )
+        },
+        drawerContent = {
+            DrawerHeader()
+            DrawerBody()
         }
     ) {
         Text(
             modifier = Modifier.padding(top = it.calculateTopPadding() + 16.dp),
-            text = "Hello")
+            text = "Hello"
+        )
     }
 }
 
